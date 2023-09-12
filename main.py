@@ -46,7 +46,6 @@ def close_window():
 
 def start_timer():
     global is_pause, timer_id
-    print(timer_id)
     if not is_pause:
         start_button["text"] = "Pause"
         start_countdown(get_secs_from_label(label))
@@ -61,7 +60,6 @@ def start_countdown(count):
     global timer_id
 
     label["text"] = secs_to_min_and_sec_str(count)
-    print(get_secs_from_label(label))
 
     if count > 0:
         timer_id = root.after(1000, start_countdown, count - 1)
