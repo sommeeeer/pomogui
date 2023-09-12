@@ -8,7 +8,7 @@ from tkinter import messagebox
 #    --greypurple: #9075a6;
 
 
-pause = False
+is_pause = False
 timer_id = None
 
 
@@ -26,38 +26,21 @@ def close_window():
     root.destroy()
 
 
-def add_pause_button():
-    pause_button = tk.Button(
-        root,
-        text="Pause",
-        command=pause_timer,
-        bg="#251531",
-        fg="#fbf5ff",
-        relief=tk.FLAT,
-    )
-    pause_button.pack()
-
-
 def start_timer():
-    start_countdown(get_secs_from_label(label))
-
-
-def pause_timer():
-    global pause
-
-    if pause:
-        pause = False
+    global is_pause, timer_id
+    print(timer_id)
+    if not is_pause:
+        start_button["text"] = "Pause"
         start_countdown(get_secs_from_label(label))
+        is_pause = True
     else:
-        pause = True
+        start_button["text"] = "Start"
+        is_pause = False
         root.after_cancel(timer_id)
 
 
 def start_countdown(count):
     global timer_id
-
-    if timer_id:
-        root.after_cancel(timer_id)
 
     label["text"] = secs_to_min_and_sec_str(count)
     print(get_secs_from_label(label))
