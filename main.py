@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+import subprocess
 
 #   COLORS:
 #    --whitepurple: #fbf5ff;
@@ -7,9 +7,25 @@ from tkinter import messagebox
 #    --poppypurple: #b26ee8;
 #    --greypurple: #9075a6;
 
+LOFI_GIRL_URL = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
+mpv_command = ["mpv", "--ytdl-format=bestaudio", LOFI_GIRL_URL]
 
 is_pause = False
 timer_id = None
+process = None
+
+
+def play_lofi_girl():
+    global process
+    if process is not None:
+        process.terminate()
+        play_lofi_button["text"] = "Play"
+        process = None
+        return
+    play_lofi_button["text"] = "Stop"
+    process = subprocess.Popen(
+        mpv_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+    )
 
 
 def secs_to_min_and_sec_str(secs):
@@ -23,6 +39,8 @@ def get_secs_from_label(label):
 
 
 def close_window():
+    if process is not None:
+        process.terminate()
     root.destroy()
 
 
@@ -61,11 +79,10 @@ root.wm_attributes("-type", "splash")
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
-
 x = 300
 y = 0
 
-root.geometry(f"200x200+{x}+{y}")
+root.geometry(f"200x150+{x}+{y}")
 root.configure(bg="#251531")
 
 
@@ -84,14 +101,29 @@ close_button.pack(side=tk.TOP, anchor=tk.NE, padx=10, pady=10)
 label = tk.Label(root, text="25:00", font=("Poppins", 18), bg="#251531", fg="#fbf5ff")
 label.pack()
 
+buttons = tk.Frame(root, bg="#251531")
+buttons.pack(side=tk.BOTTOM, pady=20)
+
 start_button = tk.Button(
-    root,
+    buttons,
     text="Start",
     command=start_timer,
     bg="#251531",
     fg="#fbf5ff",
     relief=tk.FLAT,
+    # padx=20
 )
-start_button.pack()
+start_button.pack(side=tk.LEFT)
+
+play_lofi_button = tk.Button(
+    buttons,
+    text="Play",
+    command=play_lofi_girl,
+    bg="#251531",
+    fg="#fbf5ff",
+    relief=tk.FLAT,
+    # padx=20
+)
+play_lofi_button.pack(side=tk.LEFT)
 
 root.mainloop()
