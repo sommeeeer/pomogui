@@ -1,6 +1,6 @@
 # pomogui
 
-I wanted to make this pomogui for a long time. Finally started today. 
+I wanted to make this pomogui for a long time. Finally started today. Gonna do it in Python and tkinter, with **mpv** as audio player.
 
 While coding I usually listen to LoFi girl or some similar channel. Usually on low volume. 
 
