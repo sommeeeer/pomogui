@@ -92,10 +92,10 @@ def change_timer():
     if timer_id:
         root.after_cancel(timer_id)
     if is_pomo:
-        label["text"] = "00:03"
+        label["text"] = "05:00"
         is_pomo = False
     else:
-        label["text"] = "00:05"
+        label["text"] = "25:00"
         is_pomo = True
     is_pause = True
     start_button["text"] = "Start"
@@ -113,10 +113,10 @@ def start_countdown(count):
         is_pause = True
         start_button["text"] = "Start"
         if is_pomo:
-            label["text"] = "00:03"
+            label["text"] = "05:00"
             is_pomo = False
         else:
-            label["text"] = "00:05"
+            label["text"] = "25:00"
             start_button["text"] = "Start"
             is_pomo = True
 
@@ -149,7 +149,7 @@ close_button = tk.Button(
 close_button.pack(side=tk.TOP, anchor=tk.NE, padx=10, pady=10)
 
 
-label = tk.Label(root, text="00:05", font=("Poppins", 18), bg="#251531", fg="#fbf5ff")
+label = tk.Label(root, text="25:00", font=("Poppins", 18), bg="#251531", fg="#fbf5ff")
 label.pack()
 
 buttons = tk.Frame(root, bg="#251531")
