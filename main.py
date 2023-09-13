@@ -2,6 +2,7 @@ import shutil
 import tkinter as tk
 import subprocess
 import threading
+import argparse
 
 #   COLORS:
 #    --whitepurple: #fbf5ff;
@@ -12,9 +13,10 @@ import threading
 LOFI_GIRL_URL = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
 mpv_command = ["mpv", "--ytdl-format=bestaudio", LOFI_GIRL_URL]
 
-is_pause = False
+is_pause = True
+is_pomo = True
 timer_id = None
-process = None
+lofi_mpv_process = None
 
 
 def run_mpv_mp3(file):
@@ -41,14 +43,14 @@ def is_mpv_installed():
 
 
 def play_lofi_girl():
-    global process
-    if process is not None:
-        process.terminate()
+    global lofi_mpv_process
+    if lofi_mpv_process is not None:
+        lofi_mpv_process.terminate()
         play_lofi_button["text"] = "Play"
-        process = None
+        lofi_mpv_process = None
         return
     play_lofi_button["text"] = "Stop"
-    process = subprocess.Popen(
+    lofi_mpv_process = subprocess.Popen(
         mpv_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
     )
 
@@ -64,34 +66,59 @@ def get_secs_from_label(label):
 
 
 def close_window():
-    if process is not None:
-        process.terminate()
+    if lofi_mpv_process is not None:
+        lofi_mpv_process.terminate()
     root.destroy()
 
 
 def start_timer():
-    global is_pause, timer_id
+    global is_pause, timer_id, is_pomo
 
     play_sound("sounds/click.mp3")
-    if not is_pause:
+    if is_pause:
         start_button["text"] = "Pause"
         start_countdown(get_secs_from_label(label))
-        is_pause = True
+        is_pause = False
     else:
         start_button["text"] = "Start"
-        is_pause = False
+        is_pause = True
         root.after_cancel(timer_id)
 
 
+def change_timer():
+    global is_pause, timer_id, is_pomo
+    play_sound("sounds/click.mp3")
+
+    if timer_id:
+        root.after_cancel(timer_id)
+    if is_pomo:
+        label["text"] = "00:03"
+        is_pomo = False
+    else:
+        label["text"] = "00:05"
+        is_pomo = True
+    is_pause = True
+    start_button["text"] = "Start"
+
+
 def start_countdown(count):
-    global timer_id
+    global timer_id, is_pomo, is_pause
 
     label["text"] = secs_to_min_and_sec_str(count)
 
-    if count > 0:
+    if count >= 0:
         timer_id = root.after(1000, start_countdown, count - 1)
     else:
-        label["text"] = "05:00"
+        play_sound("sounds/alarm.mp3")
+        is_pause = True
+        start_button["text"] = "Start"
+        if is_pomo:
+            label["text"] = "00:03"
+            is_pomo = False
+        else:
+            label["text"] = "00:05"
+            start_button["text"] = "Start"
+            is_pomo = True
 
 
 root = tk.Tk()
@@ -101,14 +128,12 @@ root.attributes("-topmost", True)
 # root.wm_attributes("-type", "splash")
 root.overrideredirect(True)
 
-# Get the screen width and height
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
-x = 300
+x = screen_width - 200
 y = 0
 
-root.geometry(f"200x150+{x}+{y}")
 root.configure(bg="#251531")
 
 
@@ -124,7 +149,7 @@ close_button = tk.Button(
 close_button.pack(side=tk.TOP, anchor=tk.NE, padx=10, pady=10)
 
 
-label = tk.Label(root, text="25:00", font=("Poppins", 18), bg="#251531", fg="#fbf5ff")
+label = tk.Label(root, text="00:05", font=("Poppins", 18), bg="#251531", fg="#fbf5ff")
 label.pack()
 
 buttons = tk.Frame(root, bg="#251531")
@@ -137,7 +162,6 @@ start_button = tk.Button(
     bg="#251531",
     fg="#fbf5ff",
     relief=tk.FLAT,
-    # padx=20
 )
 start_button.pack(side=tk.LEFT)
 
@@ -148,15 +172,35 @@ play_lofi_button = tk.Button(
     bg="#251531",
     fg="#fbf5ff",
     relief=tk.FLAT,
-    # padx=20
 )
 play_lofi_button.pack(side=tk.LEFT)
 
+change_timer_button = tk.Button(
+    buttons,
+    text=">",
+    command=change_timer,
+    bg="#251531",
+    fg="#fbf5ff",
+    relief=tk.FLAT,
+)
+change_timer_button.pack(side=tk.LEFT)
+
+
 if __name__ == "__main__":
-    play_sound("sounds/alarm.mp3")
     if not is_mpv_installed():
         print(
             "mpv is not installed.\nPlease install mpv according to the README and try again!"
         )
         exit(1)
+
+    parser = argparse.ArgumentParser(description="pomogui")
+    parser.add_argument(
+        "-layout",
+        choices=["left", "right"],
+        help="Specify the layout of the window. Either left or right. Default is right.",
+        default="right",
+    )
+    if parser.parse_args().layout == "left":
+        x = 0
+    root.geometry(f"200x150+{x}+{y}")
     root.mainloop()
