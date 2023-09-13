@@ -1,6 +1,7 @@
 import shutil
 import tkinter as tk
 import subprocess
+import threading
 
 #   COLORS:
 #    --whitepurple: #fbf5ff;
@@ -15,10 +16,29 @@ is_pause = False
 timer_id = None
 process = None
 
+
+def run_mpv_mp3(file):
+    try:
+        subprocess.run(
+            ["mpv", "--no-video", file],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"Error running MPV: {e}")
+    except Exception as e:
+        print(f"Error running MPV: {e}")
+
+
+def play_sound(file):
+    threading.Thread(target=run_mpv_mp3, args=(file,)).start()
+
+
 def is_mpv_installed():
-    if shutil.which('mpv') is None:
+    if shutil.which("mpv") is None:
         return False
     return True
+
 
 def play_lofi_girl():
     global process
@@ -51,6 +71,8 @@ def close_window():
 
 def start_timer():
     global is_pause, timer_id
+
+    play_sound("sounds/click.mp3")
     if not is_pause:
         start_button["text"] = "Pause"
         start_countdown(get_secs_from_label(label))
@@ -131,7 +153,10 @@ play_lofi_button = tk.Button(
 play_lofi_button.pack(side=tk.LEFT)
 
 if __name__ == "__main__":
+    play_sound("sounds/alarm.mp3")
     if not is_mpv_installed():
-        print("mpv is not installed.\nPlease install mpv according to the README and try again!")
+        print(
+            "mpv is not installed.\nPlease install mpv according to the README and try again!"
+        )
         exit(1)
     root.mainloop()
