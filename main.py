@@ -1,3 +1,4 @@
+import shutil
 import tkinter as tk
 import subprocess
 
@@ -14,6 +15,10 @@ is_pause = False
 timer_id = None
 process = None
 
+def is_mpv_installed():
+    if shutil.which('mpv') is None:
+        return False
+    return True
 
 def play_lofi_girl():
     global process
@@ -71,7 +76,8 @@ root = tk.Tk()
 
 # Set the window to stay on top of all other windows and remove the window decorations(making it borderless)
 root.attributes("-topmost", True)
-root.wm_attributes("-type", "splash")
+# root.wm_attributes("-type", "splash")
+root.overrideredirect(True)
 
 # Get the screen width and height
 screen_width = root.winfo_screenwidth()
@@ -124,4 +130,8 @@ play_lofi_button = tk.Button(
 )
 play_lofi_button.pack(side=tk.LEFT)
 
-root.mainloop()
+if __name__ == "__main__":
+    if not is_mpv_installed():
+        print("mpv is not installed.\nPlease install mpv according to the README and try again!")
+        exit(1)
+    root.mainloop()
