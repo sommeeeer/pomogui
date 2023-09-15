@@ -8,6 +8,10 @@ Im also using the pomodoro technique ([Wikipedia](https://en.wikipedia.org/wiki/
 
 The idea was that I wanted a GUI with a window that doesn't get in my way while im developing. It has to be borderless and always on top.
 
+You can see it in action on the rop right corner here:
+![Screenshot](https://magnus.dahleide.com/pomogui_screenshot.png "Optional title")
+
+
 ### Requirements
 You need **mpv** and **yt-dlp** installed for playing the LoFi girl radio. On Ubuntu/Debian thats just: 
 ```bash
