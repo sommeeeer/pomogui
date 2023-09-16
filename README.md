@@ -6,7 +6,11 @@ While coding I usually listen to [LoFi girl](https://www.youtube.com/watch?v=jfK
 
 Im also using the pomodoro technique ([Wikipedia](https://en.wikipedia.org/wiki/Pomodoro_Technique)) while studying/coding. Its a nice way to get regular breaks, while focusing maximum when you are in an active pomo. 
 
-The idea was that I wanted a GUI with a window that doesn't get in my way while im developing. It has to be borderless and always on top.
+The idea was that I wanted a GUI with a window that doesn't get in my way while im developing. Browser windows does that. It has to be borderless and always on top.
+
+You can see it in action on the rop right corner here:
+![Screenshot](https://magnus.dahleide.com/pomogui_screenshot.png "pomogui in action")
+
 
 ### Requirements
 You need **mpv** and **yt-dlp** installed for playing the LoFi girl radio. On Ubuntu/Debian thats just: 
