@@ -17,6 +17,7 @@ You need **mpv** and **yt-dlp** installed for playing the LoFi girl radio. On Ub
 ```bash
 sudo apt install mpv
 poetry install
+poetry run python main.py
 ```
 
 ```console
