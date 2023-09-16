@@ -18,6 +18,9 @@ is_pomo = True
 timer_id = None
 lofi_mpv_process = None
 
+pause_time = 5
+pomo_time = 25
+
 
 def run_mpv_mp3(file):
     try:
@@ -61,6 +64,10 @@ def secs_to_min_and_sec_str(secs):
     return f"{mins:02d}:{secs:02d}"
 
 
+def mins_to_minstr(mins):
+    return f"{mins:02d}:00"
+
+
 def get_secs_from_label(label):
     return int(label["text"].split(":")[0]) * 60 + int(label["text"].split(":")[1])
 
@@ -77,7 +84,7 @@ def start_timer():
     play_sound("sounds/click.mp3")
     if is_pause:
         start_button["text"] = "Pause"
-        start_countdown(get_secs_from_label(label))
+        start_countdown(get_secs_from_label(timer_label))
         is_pause = False
     else:
         start_button["text"] = "Start"
@@ -92,10 +99,10 @@ def change_timer():
     if timer_id:
         root.after_cancel(timer_id)
     if is_pomo:
-        label["text"] = "05:00"
+        timer_label["text"] = mins_to_minstr(pause_time)
         is_pomo = False
     else:
-        label["text"] = "25:00"
+        timer_label["text"] = mins_to_minstr(pomo_time)
         is_pomo = True
     is_pause = True
     start_button["text"] = "Start"
@@ -104,7 +111,7 @@ def change_timer():
 def start_countdown(count):
     global timer_id, is_pomo, is_pause
 
-    label["text"] = secs_to_min_and_sec_str(count)
+    timer_label["text"] = secs_to_min_and_sec_str(count)
 
     if count >= 0:
         timer_id = root.after(1000, start_countdown, count - 1)
@@ -113,10 +120,10 @@ def start_countdown(count):
         is_pause = True
         start_button["text"] = "Start"
         if is_pomo:
-            label["text"] = "05:00"
+            timer_label["text"] = mins_to_minstr(pause_time)
             is_pomo = False
         else:
-            label["text"] = "25:00"
+            timer_label["text"] = mins_to_minstr(pomo_time)
             start_button["text"] = "Start"
             is_pomo = True
 
@@ -149,8 +156,10 @@ close_button = tk.Button(
 close_button.pack(side=tk.TOP, anchor=tk.NE, padx=10, pady=10)
 
 
-label = tk.Label(root, text="25:00", font=("Poppins", 18), bg="#251531", fg="#fbf5ff")
-label.pack()
+timer_label = tk.Label(
+    root, text=mins_to_minstr(pomo_time), font=("Poppins", 18), bg="#251531", fg="#fbf5ff"
+)
+timer_label.pack()
 
 buttons = tk.Frame(root, bg="#251531")
 buttons.pack(side=tk.BOTTOM, pady=20)
@@ -200,7 +209,36 @@ if __name__ == "__main__":
         help="Specify the layout of the window. Either left or right. Default is right.",
         default="right",
     )
+    parser.add_argument(
+        "-url",
+        help="Specify the url that MPV will stream from. This defaults to LoFi girl (https://www.youtube.com/watch?v=jfKfPfyJRdk)",
+        default=LOFI_GIRL_URL,
+        type=str,
+    )
+    parser.add_argument(
+        "-pomo",
+        help="Specify the length of a pomodoro in minutes. Default is 25.",
+        default=25,
+        type=int,
+    )
+    parser.add_argument(
+        "-pause",
+        help="Specify the length of a pause in minutes. Default is 5.",
+        default=5,
+        type=int,
+    )
     if parser.parse_args().layout == "left":
         x = 0
+
+    if parser.parse_args().pause:
+        pause_time = parser.parse_args().pause
+
+    if parser.parse_args().url:
+        mpv_command[2] = parser.parse_args().url
+
+    if parser.parse_args().pomo:
+        pomo_time = parser.parse_args().pomo
+
     root.geometry(f"200x150+{x}+{y}")
+    timer_label["text"] = f"{parser.parse_args().pomo}:00"
     root.mainloop()

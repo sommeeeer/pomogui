@@ -12,7 +12,20 @@ The idea was that I wanted a GUI with a window that doesn't get in my way while 
 You need **mpv** and **yt-dlp** installed for playing the LoFi girl radio. On Ubuntu/Debian thats just: 
 ```bash
 sudo apt install mpv
-pip install yt-dlp
+poetry install
+```
+
+```bash
+usage: main.py [-h] [-layout {left,right}] [-url URL] [-pomo POMO] [-pause PAUSE]
+
+pomogui
+
+options:
+  -h, --help            show this help message and exit
+  -layout {left,right}  Specify the layout of the window. Either left or right. Default is right.
+  -url URL              Specify the url that MPV will stream from. This defaults to LoFi girl (https://www.youtube.com/watch?v=jfKfPfyJRdk)
+  -pomo POMO            Specify the length of a pomodoro in minutes. Default is 25.
+  -pause PAUSE          Specify the length of a pause in minutes. Default is 5.
 ```
 If you already have yt-dlp and mpv, you might need to update yt-dlp to the newest version. You can do so with:
 ```bash
@@ -20,6 +33,7 @@ pip install --upgrade
 # or
 yt-dlp -U
 ```
+
 
 For further instructions on how to install **mpv** and **yt-dlp** on other systems you can visit they're installation docs here:
 
