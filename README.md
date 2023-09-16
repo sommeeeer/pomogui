@@ -19,7 +19,7 @@ sudo apt install mpv
 poetry install
 ```
 
-```bash
+```console
 usage: main.py [-h] [-layout {left,right}] [-url URL] [-pomo POMO] [-pause PAUSE]
 
 pomogui
